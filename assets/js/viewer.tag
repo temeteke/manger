@@ -281,11 +281,8 @@ import $ from 'jquery'
 		}
 
 		this.page_update = () => {
-			console.log(this.page)
 			this.page_right = this.pages[this.page]
 			this.page_left = this.pages[this.page+1]
-			console.log(this.page_right)
-			console.log(this.page_left)
 		}
 
 		this.resize = () => {
