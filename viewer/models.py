@@ -8,28 +8,24 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
-class Title(models.Model):
-    name = models.CharField(max_length=100)
-    authors = models.ManyToManyField(Author, related_name='titles')
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def package(self):
-        return self.volumes.order_by('number')[0].pages[0]
-
-class Volume(models.Model):
-    title = models.ForeignKey(Title, related_name='volumes', on_delete=models.CASCADE)
-    number = models.IntegerField(default=1)
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    authors = models.ManyToManyField(Author, related_name='books')
+    volume = models.IntegerField(blank=True, null=True)
     pub_date = models.DateField()
 
     def __str__(self):
-        return self.title.name + ' ' + str(self.number)
+        name = self.title
+        if self.volume:
+           name += ' ' + str(self.volume)
+        return name
 
     @property
     def directory(self):
-        return Path('_'.join([ author.name for author in self.title.authors.all()])) / Path(self.title.name) / Path(str(self.number))
+        directory = Path('_'.join([ author.name for author in self.authors.all()])) / Path(self.title)
+        if self.volume:
+            directory /= Path(str(self.volume))
+        return directory
 
     @property
     def pages(self):

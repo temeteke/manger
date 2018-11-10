@@ -1,14 +1,14 @@
 import querystring from 'querystring'
 import $ from 'jquery'
 
-<title-list>
+<book-list>
 	<div class="container">
 		<form onsubmit={ submit }>
 			<div class="input-group mt-3">
 				<input class="form-control" type="search" name="search" value={ queries.search } oninput={ input } />
 			</div>
 		</form>
-		<title-results if={ video_results_is_visible } pagination=true queries={ queries }>
+		<book-results if={ video_results_is_visible } pagination=true queries={ queries }>
 	</div>
 
 	<script>
@@ -66,13 +66,13 @@ import $ from 'jquery'
 			this.update_location()
 		}
 	</script>
-</title-list>
+</book-list>
 
-<title-results>
+<book-results>
 	<div if={ opts.pagination && !loading } class="text-right">{ count }件</div>
 	<div class="row">
 		<div class="col-12 col-sm-6 col-lg-4" each={ item in items }>
-			<title-result data={ item } />
+			<book-result data={ item } />
 		</div>
 	</div>
 	<loader if={ loading }/>
@@ -82,7 +82,7 @@ import $ from 'jquery'
 		this.loading = true
 
 		this.on('mount', () => {
-			fetch('/viewer/titles/?' + querystring.stringify(opts.queries))
+			fetch('/viewer/books/?' + querystring.stringify(opts.queries))
 			.then(data => data.json())
 			.then(json => {
 				this.update({
@@ -109,189 +109,109 @@ import $ from 'jquery'
 			}
 		}
 	</script>
-</title-results>
+</book-results>
 
-<title-result>
+<book-result>
 	<div class="card mb-3" onclick={ showdetail }>
-		<div class="embed-responsive embed-responsive-16by9 bg-light">
-			<object data={ opts.data.package } style="object-fit: contain"/>
+		<div class="embed-responsive embed-responsive-4by3 bg-light">
+			<object data={ opts.data.pages[0] } style="object-fit: contain"/>
 		</div>
 		<div class="card-body">
-			<p class="card-title text-truncate mb-0">{ opts.data.name }</p>
+			<p class="card-title text-truncate mb-0">{ opts.data.title } { opts.data.volume }</p>
 			<p class="card-title">
 				<small class="text-muted" each={ author in opts.data.authors }>{ author }</small>
+				<small class="text-muted">{ opts.data.pub_date }</small>
 			</p>
 		</div>
 	</div>
 
 	<script>
 		this.showdetail = () => {
-			location.hash = '#viewer/' + opts.data.id
+			location.hash = '#viewer/' + opts.data.id + '/'
 		}
 	</script>
-</title-result>
-
-<volume-list>
-	<div class="container">
-		<div>タイトル</div>
-		<div>作者</div>
-		<volume-results if={ volume_results_is_visible } pagination=true queries={ queries } />
-	</div>
-
-	<script>
-		this.queries = 'title=' + location.hash.split('/')[1]
-
-		this.on('route', () => {
-			if (process.env.DEBUG) console.log('route')
-
-			//結果をアンマウント
-			this.volume_results_is_visible = false
-			this.update()
-
-			//クエリパラメータを取得
-			this.queries = 'title=' + location.hash.split('/')[1]
-			if (process.env.DEBUG) console.log(this.queries)
-
-			//結果をマウント
-			this.volume_results_is_visible = true
-			this.update()
-		})
-	</script>
-</volume-list>
-
-<volume-results>
-	<div if={ opts.pagination && !loading } class="text-right">{ count }件</div>
-	<div class="row">
-		<div class="col-12 col-sm-6 col-lg-4" each={ item in items }>
-			<volume-result data={ item } />
-		</div>
-	</div>
-	<loader if={ loading }/>
-	<detector if={ opts.pagination } onvisible={ next } margin='500px' />
-
-	<script>
-		this.loading = true
-
-		this.on('mount', () => {
-			fetch('/viewer/volumes/?' + querystring.stringify(opts.queries))
-			.then(data => data.json())
-			.then(json => {
-				this.update({
-					items: json.results,
-					count: json.count,
-					next_url: json.next,
-					loading: false,
-				})
-			})
-		})
-
-		this.next = () => {
-			if (!this.loading && this.next_url) {
-				this.loading = true
-				this.update()
-				fetch(this.next_url)
-				.then(data => data.json())
-				.then(json => {
-					this.items = [...this.items, ...json.results]
-					this.next_url = json.next
-					this.loading = false
-					this.update()
-				})
-			}
-		}
-	</script>
-</volume-results>
-
-<volume-result>
-	<div class="card mb-3" onclick={ showdetail }>
-		<div class="embed-responsive embed-responsive-16by9 bg-light">
-			<object data={ opts.data.pages[0] } style="object-fit: contain"/>
-		</div>
-		<div class="card-body">
-			<p class="card-title text-truncate mb-0">{ opts.data.number }</p>
-		</div>
-	</div>
-
-	<title-detail if={ detail_window_is_visible }/>
-
-	<script>
-		this.showdetail = () => {
-			location.hash = '#viewer/' + opts.data.title + '/' + opts.data.number
-		}
-	</script>
-</volume-result>
+</book-result>
 
 <page-list>
-	<page-results if={ page_results_is_visible } volume_id={ volume_id } />
-
-	<script>
-		this.volume_id = location.hash.split('/')[2]
-
-		this.on('route', () => {
-			if (process.env.DEBUG) console.log('route')
-
-			//結果をアンマウント
-			this.page_results_is_visible = false
-			this.update()
-
-			//クエリパラメータを取得
-			this.volume_id = location.hash.split('/')[2]
-
-			//結果をマウント
-			this.page_results_is_visible = true
-			this.update()
-		})
-	</script>
-</page-list>
-
-<page-results>
-	<div class="text-center">
-		<button class="btn btn-outline-primary" onclick={ next }>←</button>
-		<img src={ page_left } style="height: { height }px;"/>
-		<img src={ page_right } style="height: { height }px;"/>
-		<button class="btn btn-outline-primary" onclick={ prev }>→</button>
+	<div class="text-center" style="direction: rtl" onclick={ move_page } >
+		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="height: { height }px;"/>
 	</div>
 
 	<script>
-		this.page = 0
+		this.book_id = location.hash.split('/')[1]
+		this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
+
+		this.shown_pages = 1
 
 		this.on('mount', () => {
-			fetch('/viewer/volumes/' + opts.volume_id)
+			fetch('/viewer/books/' + this.book_id)
 			.then(data => data.json())
 			.then(json => {
 				this.pages = json.pages
-				this.page_update()
+				this.title = json.title
+				this.number = json.number
+				this.update_location()
 				this.resize()
-				this.update()
 			})
 		})
 
-		this.next = () => {
-			if (this.page+2 <= this.pages.length) {
-				this.page += 2
-				this.page_update()
+		this.resize = () => {
+			//画像サイズを画面いっぱいにする
+			this.height = window.innerHeight - this.root.getBoundingClientRect().top
+
+			//見開き表示の判定
+			let imgs = this.refs.img
+			if (!Array.isArray(imgs)) {
+				imgs = [imgs]
 			}
+
+			if (window.innerWidth > window.innerHeight && imgs.every(img => img.width < img.height)) {
+				this.shown_pages = 2
+			}
+			else {
+				this.shown_pages = 1
+			}
+
+			if (process.env.DEBUG) console.log('shown_pages: ' + this.shown_pages)
+
+			this.update()
+		}
+
+		this.move_page = (e) => {
+			if (e.clientX < window.innerWidth/2) {
+				this.next()
+			}
+			else {
+				this.prev()
+			}
+		}
+
+		this.next = () => {
+			if (this.page+this.shown_pages <= this.pages.length) {
+				this.page += this.shown_pages
+			}
+			else {
+				this.page = this.pages.length
+			}
+			this.update_location()
 		}
 
 		this.prev = () => {
-			if (this.page-2 >= 0) {
-				this.page -= 2
-				this.page_update()
+			if (this.page-this.shown_pages >= 0) {
+				this.page -= this.shown_pages
 			}
+			else {
+				this.page = 0
+			}
+			this.update_location()
 		}
 
-		this.page_update = () => {
-			this.page_right = this.pages[this.page]
-			this.page_left = this.pages[this.page+1]
-		}
-
-		this.resize = () => {
-			this.height = window.innerHeight - this.root.getBoundingClientRect().top
-			this.update()
+		this.update_location = () => {
+			location.hash = '#viewer/' + this.book_id + '/' + this.page
 		}
 
 		window.onresize = () => {
 			this.resize()
 		}
 	</script>
-</page-results>
+</page-list>
