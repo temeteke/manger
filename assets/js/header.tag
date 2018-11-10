@@ -15,7 +15,7 @@ import route from 'riot-route/lib/tag'
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
-				<li class={nav-item:true, active:opts.page=='polls'}>
+				<li class={nav-item:true, active:opts.page=='viewer'}>
 					<a class="nav-link" href="#viewer">Viewer</a>
 				</li>
 			</ul>

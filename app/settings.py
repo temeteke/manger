@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'livereload',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'webpack_loader',
     'app',
     'viewer',
@@ -128,6 +129,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'assets'),
 )
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
