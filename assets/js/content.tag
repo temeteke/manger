@@ -1,9 +1,9 @@
 import './home.tag'
-import './polls.tag'
+import './viewer.tag'
 
 <content>
 	<router>
 		<route path=""><home/></route>
-		<route path="polls.."><polls/></route>
+		<route path="viewer.."><viewer/></route>
 	</router>
 </content>

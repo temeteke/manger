@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'webpack_loader',
     'app',
-    'polls',
+    'viewer',
 ]
 
 MIDDLEWARE = [
