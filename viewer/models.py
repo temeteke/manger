@@ -1,6 +1,7 @@
 from django.db import models
 from pathlib import Path
 from django.conf import settings
+import re
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -29,5 +30,11 @@ class Book(models.Model):
 
     @property
     def pages(self):
+        numbers = re.compile(r'(\d+)')
+        def numerical_sort(path):
+            parts = numbers.split(str(path))
+            parts[1::2] = map(int, parts[1::2])
+            return parts
+
         directory = Path(settings.MEDIA_ROOT) / self.directory
-        return [ str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT)) for p in sorted(directory.glob('*'))]
+        return [ str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT)) for p in sorted(directory.glob('*'), key=numerical_sort)]
