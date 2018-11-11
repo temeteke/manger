@@ -127,7 +127,7 @@ import $ from 'jquery'
 
 	<script>
 		this.showdetail = () => {
-			location.hash = '#viewer/' + opts.data.id + '/'
+			location.hash = '#viewer/' + opts.data.id
 		}
 	</script>
 </book-result>
@@ -138,20 +138,24 @@ import $ from 'jquery'
 	</div>
 
 	<script>
-		this.book_id = location.hash.split('/')[1]
+		this.book_id = Number(location.hash.split('/')[1])
 		this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
 
 		this.shown_pages = 1
 
+		this.on('route', () => {
+			console.log('route')
+			this.book_id = Number(location.hash.split('/')[1])
+			this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
+			this.update_location()
+		})
+
 		this.on('mount', () => {
-			fetch('/viewer/books/' + this.book_id)
+			fetch('/viewer/books/' + this.book_id + '/')
 			.then(data => data.json())
 			.then(json => {
 				this.pages = json.pages
-				this.title = json.title
-				this.number = json.number
-				this.update_location()
-				this.resize()
+				this.update()
 			})
 		})
 
