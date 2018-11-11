@@ -26,6 +26,7 @@ class Book(models.Model):
         directory = Path('_'.join([ author.name for author in self.authors.all()])) / Path(self.title)
         if self.volume:
             directory /= Path(str(self.volume))
+        directory = Path(str(directory).replace(' ', '_'))
         return directory
 
     @property
