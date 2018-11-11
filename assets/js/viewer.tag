@@ -133,7 +133,7 @@ import $ from 'jquery'
 </book-result>
 
 <page-list>
-	<div class="text-center" style="direction: rtl" onclick={ move_page } >
+	<div class="text-center" style="direction: rtl; background-color: lightgray" onclick={ move_page } >
 		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="height: { height }px;"/>
 	</div>
 
