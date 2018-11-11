@@ -119,8 +119,8 @@ import $ from 'jquery'
 		<div class="card-body">
 			<p class="card-title text-truncate mb-0">{ opts.data.title } { opts.data.volume }</p>
 			<p class="card-title">
-				<small class="text-muted" each={ author in opts.data.authors }>{ author }</small>
-				<small class="text-muted">{ opts.data.pub_date }</small>
+				<span class="mr-1" each={ author in opts.data.authors }><small class="text-muted">{ author }</small></span>
+				<span><small class="text-muted">{ opts.data.pub_date }</small></span>
 			</p>
 		</div>
 	</div>
@@ -191,11 +191,11 @@ import $ from 'jquery'
 		}
 
 		this.next = () => {
-			if (this.page+this.shown_pages <= this.pages.length) {
+			if (this.page+this.shown_pages < this.pages.length) {
 				this.page += this.shown_pages
 			}
 			else {
-				this.page = this.pages.length
+				this.page = this.pages.length-1
 			}
 			this.update_location()
 		}
