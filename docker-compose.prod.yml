@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+  proxy:
+    image: nginx
+    container_name: manger.proxy
+    ports:
+      - "8001:80"
+    volumes:
+      - ./proxy/nginx_conf:/etc/nginx/conf.d
+    depends_on:
+      - app-back
+    networks:
+      - front
+    volumes_from:
+      - app-front
+      - app-back
+
+  app-front:
+    build:
+      context: app-front
+      dockerfile: Dockerfile_prod
+    container_name: manger.app-front-prod
+    env_file: .env
+    volumes:
+      - /work/static/bundles
+
+  app-back:
+    build:
+      context: app-back
+      dockerfile: Dockerfile_prod
+    container_name: manger.app-back
+    depends_on:
+      - db
+    env_file: .env
+    volumes:
+      - /work/static
+    networks:
+      - front
+      - back
+    volumes_from:
+      - app-front
+
+  db:
+    image: postgres
+    container_name: manger.db
+    networks:
+      - back
+
+networks:
+  front:
+  back:
