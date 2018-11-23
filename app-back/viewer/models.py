@@ -13,7 +13,7 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField(Author, related_name='books')
     volume = models.IntegerField(blank=True, null=True)
-    pub_date = models.DateField()
+    pub_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         name = self.title
