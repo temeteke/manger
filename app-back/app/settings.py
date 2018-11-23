@@ -24,7 +24,7 @@ SECRET_KEY = '9pu!+o(8@4jd-8=2c9crpf6z=pk974i)#%sn0=-*w54!&a9h2&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['app-back']
+ALLOWED_HOSTS = [os.environ.get('HOST')]
 
 
 # Application definition
@@ -148,4 +148,4 @@ WEBPACK_LOADER = {
     }
 }
 
-LIVERELOAD_HOST = 'app-back'
+LIVERELOAD_HOST = os.environ.get('HOST')
