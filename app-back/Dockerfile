@@ -7,7 +7,6 @@ RUN pip install -r requirements.txt
 ADD . /work/
 
 RUN pip install uwsgi
-ENV STATIC_ROOT /work/static
-RUN python manage.py collectstatic --noinput
-CMD uwsgi --socket :8000 --wsgi-file app/wsgi.py
+
+CMD python manage.py collectstatic --noinput; uwsgi --socket :8000 --wsgi-file app/wsgi.py
 EXPOSE 8000

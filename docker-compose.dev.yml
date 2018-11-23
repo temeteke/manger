@@ -1,27 +1,11 @@
 version: '2'
 
 services:
-  proxy:
-    image: nginx
-    ports:
-      - "${PORT}:80"
-    volumes:
-      - ./proxy/nginx_conf:/etc/nginx/conf.d
-      - ${MEDIA_ROOT}:/work/media
-    depends_on:
-      - app-back
-    networks:
-      - front
-    volumes_from:
-      - app-front
-      - app-back
-    command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
-
   app-front:
     build: app-front
     env_file: .env
     volumes:
-      - /work/static/bundles
+      - /work/assets
       - ./app-front:/work
     command: npm start
 
@@ -39,6 +23,10 @@ services:
       - back
     volumes_from:
       - app-front
+    command: bash -c "python manage.py livereload --host 0.0.0.0 /work/assets/ & python manage.py runserver 0.0.0.0:80"
+    ports:
+      - "${PORT}:80"
+      - "${LIVERELOAD_PORT}:${LIVERELOAD_PORT}"
 
   db:
     image: postgres

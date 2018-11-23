@@ -5,7 +5,7 @@ const BundleTracker = require('webpack-bundle-tracker')
 module.exports = {
 	entry: './app/index.js',
 	output: {
-		path: path.resolve(__dirname, 'static/bundles/'),
+		path: path.resolve(__dirname, 'assets/bundles/'),
 		filename: '[name]-[hash].js'
 	},
 	module: {
@@ -44,7 +44,7 @@ module.exports = {
 	},
 	plugins: [
 		//new Dotenv(),
-		new BundleTracker({path: __dirname, filename: './static/bundles/webpack-stats.json'}),
+		new BundleTracker({path: __dirname, filename: './assets/webpack-stats.json'}),
 	],
 	devServer: {
 		contentBase: path.resolve(__dirname, 'static'),

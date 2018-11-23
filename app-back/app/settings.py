@@ -128,6 +128,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -144,8 +147,9 @@ WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(STATIC_ROOT, 'bundles/webpack-stats.json'),
+        'STATS_FILE': os.path.join(BASE_DIR, 'assets/webpack-stats.json'),
     }
 }
 
 LIVERELOAD_HOST = os.environ.get('HOST')
+LIVERELOAD_PORT = os.environ.get('LIVERELOAD_PORT')

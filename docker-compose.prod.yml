@@ -18,17 +18,13 @@ services:
     command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
 
   app-front:
-    build:
-      context: app-front
-      dockerfile: Dockerfile_prod
+    build: app-front
     env_file: .env
     volumes:
-      - /work/static/bundles
+      - /work/assets
 
   app-back:
-    build:
-      context: app-back
-      dockerfile: Dockerfile_prod
+    build: app-back
     depends_on:
       - db
     env_file: .env
