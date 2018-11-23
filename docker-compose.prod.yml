@@ -8,6 +8,7 @@ services:
       - "8001:80"
     volumes:
       - ./proxy/nginx_conf:/etc/nginx/conf.d
+      - ${MEDIA_ROOT}:/work/media
     depends_on:
       - app-back
     networks:
@@ -15,6 +16,7 @@ services:
     volumes_from:
       - app-front
       - app-back
+    command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
 
   app-front:
     build:
@@ -35,6 +37,7 @@ services:
     env_file: .env
     volumes:
       - /work/static
+      - ${MEDIA_ROOT}:/work/media
     networks:
       - front
       - back
