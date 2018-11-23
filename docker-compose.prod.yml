@@ -3,7 +3,6 @@ version: '2'
 services:
   proxy:
     image: nginx
-    container_name: manger.proxy
     ports:
       - "8001:80"
     volumes:
@@ -22,7 +21,6 @@ services:
     build:
       context: app-front
       dockerfile: Dockerfile_prod
-    container_name: manger.app-front-prod
     env_file: .env
     volumes:
       - /work/static/bundles
@@ -31,7 +29,6 @@ services:
     build:
       context: app-back
       dockerfile: Dockerfile_prod
-    container_name: manger.app-back
     depends_on:
       - db
     env_file: .env
@@ -46,7 +43,8 @@ services:
 
   db:
     image: postgres
-    container_name: manger.db
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
     networks:
       - back
 
