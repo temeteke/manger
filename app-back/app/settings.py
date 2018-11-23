@@ -151,5 +151,5 @@ WEBPACK_LOADER = {
     }
 }
 
-LIVERELOAD_HOST = os.environ.get('HOST')
-LIVERELOAD_PORT = os.environ.get('LIVERELOAD_PORT')
+LIVERELOAD_HOST = os.environ.get('HOST', '127.0.0.1')
+LIVERELOAD_PORT = os.environ.get('LIVERELOAD_PORT', '35729')
