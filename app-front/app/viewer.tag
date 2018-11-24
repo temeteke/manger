@@ -144,22 +144,32 @@ import Cookies from 'js-cookie'
 		this.shown_pages = 1
 
 		this.on('route', () => {
-			console.log('route')
+			if (process.env.DEBUG) console.log('route')
 			this.book_id = Number(location.hash.split('/')[1])
-			this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
-			this.update_page()
+			let page = location.hash.split('/')[2]
+			if (page) {
+				this.page = Number(page)
+			}
+			else {
+				this.get_pages()
+			}
 		})
 
 		this.on('mount', () => {
+			if (process.env.DEBUG) console.log('mount')
+			this.get_pages()
+		})
+
+		this.get_pages = () => {
 			fetch('/viewer/books/' + this.book_id + '/')
 			.then(data => data.json())
 			.then(json => {
 				this.pages = json.pages
 				this.page = json.bookmark
-				this.update_page()
+				this.update_location()
 				this.update()
 			})
-		})
+		}
 
 		this.resize = () => {
 			//画像サイズを画面いっぱいにする
@@ -199,7 +209,8 @@ import Cookies from 'js-cookie'
 			else {
 				this.page = this.pages.length-1
 			}
-			this.update_page()
+			this.update_location()
+			this.update_bookmark()
 		}
 
 		this.prev = () => {
@@ -209,12 +220,15 @@ import Cookies from 'js-cookie'
 			else {
 				this.page = 0
 			}
-			this.update_page()
+			this.update_location()
+			this.update_bookmark()
 		}
 
-		this.update_page = () => {
+		this.update_location = () => {
 			location.hash = '#viewer/' + this.book_id + '/' + this.page
+		}
 
+		this.update_bookmark = () => {
 			fetch('/viewer/books/' + this.book_id + '/', {
 				method: 'PATCH',
 				body: JSON.stringify({bookmark: this.page}),
