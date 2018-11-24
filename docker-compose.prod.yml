@@ -18,7 +18,11 @@ services:
     command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
 
   app-front:
-    build: app-front
+    build:
+      context: app-front
+      args:
+        - DEBUG=${DEBUG}
+        - TITLE=${TITLE}
     env_file: .env
     volumes:
       - /work/assets

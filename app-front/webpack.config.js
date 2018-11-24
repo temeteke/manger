@@ -1,5 +1,5 @@
+const webpack = require('webpack');
 const path = require('path')
-const Dotenv = require('dotenv-webpack');
 const BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = {
@@ -43,12 +43,10 @@ module.exports = {
 		]
 	},
 	plugins: [
-		//new Dotenv(),
+		new webpack.EnvironmentPlugin([
+			'DEBUG',
+			'TITLE',
+		]),
 		new BundleTracker({path: __dirname, filename: './assets/webpack-stats.json'}),
 	],
-	devServer: {
-		contentBase: path.resolve(__dirname, 'static'),
-		host: '0.0.0.0',
-		disableHostCheck: true
-	}
 };
