@@ -13,7 +13,8 @@ class AuthorViewSet(viewsets.ModelViewSet):
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter )
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter )
+    filter_fields = ('authors__name', 'title')
     search_fields = ('title', 'authors__name')
     ordering_fields = ('authors__name', 'title', 'volume')
     ordering = ('authors__name', 'title', 'volume')
