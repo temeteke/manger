@@ -31,6 +31,7 @@ services:
     volumes:
       - /work/static
       - ${MEDIA_ROOT}:/work/media
+      - ./app-back:/work
     networks:
       - front
       - back

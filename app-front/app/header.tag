@@ -18,6 +18,9 @@ import route from 'riot-route/lib/tag'
 				<li class={nav-item:true, active:opts.page=='viewer'}>
 					<a class="nav-link" href="#viewer">Viewer</a>
 				</li>
+				<li>
+					<a class="nav-link" href="/admin/" target="_blank" rel="noopener">Admin</a>
+				</li>
 			</ul>
 		</div>
 	</nav>
