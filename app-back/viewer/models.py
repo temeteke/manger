@@ -14,6 +14,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author, related_name='books')
     volume = models.IntegerField(blank=True, null=True)
     pub_date = models.DateField(blank=True, null=True)
+    bookmark = models.IntegerField(default=0)
 
     def __str__(self):
         name = self.title

@@ -1,5 +1,6 @@
 import querystring from 'querystring'
 import $ from 'jquery'
+import Cookies from 'js-cookie'
 
 <book-list>
 	<div class="container">
@@ -147,7 +148,7 @@ import $ from 'jquery'
 			console.log('route')
 			this.book_id = Number(location.hash.split('/')[1])
 			this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
-			this.update_location()
+			this.update_page()
 		})
 
 		this.on('mount', () => {
@@ -155,6 +156,8 @@ import $ from 'jquery'
 			.then(data => data.json())
 			.then(json => {
 				this.pages = json.pages
+				this.page = json.bookmark
+				this.update_page()
 				this.update()
 			})
 		})
@@ -197,7 +200,7 @@ import $ from 'jquery'
 			else {
 				this.page = this.pages.length-1
 			}
-			this.update_location()
+			this.update_page()
 		}
 
 		this.prev = () => {
@@ -207,11 +210,21 @@ import $ from 'jquery'
 			else {
 				this.page = 0
 			}
-			this.update_location()
+			this.update_page()
 		}
 
-		this.update_location = () => {
+		this.update_page = () => {
 			location.hash = '#viewer/' + this.book_id + '/' + this.page
+
+			fetch('/viewer/books/' + this.book_id + '/', {
+				method: 'PATCH',
+				body: JSON.stringify({bookmark: this.page}),
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'X-CSRFToken': Cookies.get("csrftoken"),
+				},
+			})
 		}
 
 		window.onresize = () => {
