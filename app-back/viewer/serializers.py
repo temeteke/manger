@@ -11,6 +11,17 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ('id', 'title', 'authors', 'volume', 'pub_date', 'directory', 'pages')
 
-    authors = serializers.StringRelatedField(many=True)
-    directory = serializers.CharField()
-    pages = serializers.ListField()
+    authors = AuthorSerializer(many=True)
+    directory = serializers.CharField(read_only=True)
+    pages = serializers.ListField(read_only=True)
+
+    def create(self, validated_data):
+        authors_data = validated_data.pop('authors')
+
+        book, created = Book.objects.get_or_create(**validated_data)
+
+        for author_data in authors_data:
+            author, created = Author.objects.get_or_create(**author_data)
+            book.authors.add(author)
+
+        return book

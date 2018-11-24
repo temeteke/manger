@@ -119,7 +119,7 @@ import $ from 'jquery'
 		<div class="card-body">
 			<p class="card-title text-truncate mb-0">{ opts.data.title } { opts.data.volume }</p>
 			<p class="card-title">
-				<span class="mr-1" each={ author in opts.data.authors }><small class="text-muted">{ author }</small></span>
+				<span class="mr-1" each={ author in opts.data.authors }><small class="text-muted">{ author.name }</small></span>
 				<span><small class="text-muted">{ opts.data.pub_date }</small></span>
 			</p>
 		</div>
@@ -219,3 +219,20 @@ import $ from 'jquery'
 		}
 	</script>
 </page-list>
+
+<detector>
+	<script>
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					opts.onvisible()
+				}
+			})
+		}, {
+			rootMargin: opts.margin
+		})
+
+		this.on('mount', () => observer.observe(this.root))
+		this.on('unmount', () => observer.unobserve(this.root))
+	</script>
+</detector>
