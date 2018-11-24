@@ -133,8 +133,8 @@ import $ from 'jquery'
 </book-result>
 
 <page-list>
-	<div class="text-center" style="direction: rtl; background-color: lightgray" onclick={ move_page } >
-		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="height: { height }px;"/>
+	<div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; background-color: lightgray; height: { height }px;" onclick={ move_page } >
+		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="max-width: 100%; max-height: 100%;"/>
 	</div>
 
 	<script>
