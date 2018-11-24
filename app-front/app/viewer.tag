@@ -118,19 +118,13 @@ import Cookies from 'js-cookie'
 			<object data={ opts.data.pages[0] } style="object-fit: contain"/>
 		</div>
 		<div class="card-body">
-			<p class="card-title text-truncate mb-0">{ opts.data.title } { opts.data.volume }</p>
+			<a class="card-title text-truncate" href="#viewer/{ opts.data.id }" target="_blank" rel="noopener">{ opts.data.title } { opts.data.volume }</a>
 			<p class="card-title">
 				<span class="mr-1" each={ author in opts.data.authors }><small class="text-muted">{ author.name }</small></span>
 				<span><small class="text-muted">{ opts.data.pub_date }</small></span>
 			</p>
 		</div>
 	</div>
-
-	<script>
-		this.showdetail = () => {
-			location.hash = '#viewer/' + opts.data.id
-		}
-	</script>
 </book-result>
 
 <page-list>
