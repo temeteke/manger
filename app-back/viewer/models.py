@@ -1,6 +1,7 @@
 from django.db import models
 from pathlib import Path
 from django.conf import settings
+import urllib
 import re
 
 class Author(models.Model):
@@ -34,9 +35,9 @@ class Book(models.Model):
     def pages(self):
         numbers = re.compile(r'(\d+)')
         def numerical_sort(path):
-            parts = numbers.split(str(path))
-            parts[1::2] = map(int, parts[1::2])
-            return parts
+            parts = numbers.split(path.name)
+            parts[1::2] = [ part.zfill(8) for part in parts[1::2] ]
+            return ''.join(parts)
 
         directory = Path(settings.MEDIA_ROOT) / self.directory
-        return [ str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT)) for p in sorted(directory.glob('*'), key=numerical_sort)]
+        return [ urllib.parse.quote(str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT))) for p in sorted(directory.glob('*'), key=numerical_sort)]
