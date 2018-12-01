@@ -1,6 +1,7 @@
 import querystring from 'querystring'
 import $ from 'jquery'
 import Cookies from 'js-cookie'
+import './loader.tag'
 
 <book-list>
 	<div class="container">
