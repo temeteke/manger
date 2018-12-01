@@ -40,4 +40,4 @@ class Book(models.Model):
             return ''.join(parts)
 
         directory = Path(settings.MEDIA_ROOT) / self.directory
-        return [ urllib.parse.quote(str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT))) for p in sorted(directory.glob('*'), key=numerical_sort)]
+        return [ urllib.parse.quote(str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT))) for p in sorted([ path for path in directory.iterdir() if path.is_file() ], key=numerical_sort)]
