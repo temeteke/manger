@@ -115,20 +115,27 @@ import './loader.tag'
 
 <book-result>
 	<div class="card mb-3">
-		<div class="embed-responsive embed-responsive-4by3 bg-light">
+		<div class="card-img-top embed-responsive embed-responsive-4by3 bg-light">
 			<object data={ opts.data.pages[0] } style="object-fit: contain"/>
 		</div>
-		<div class="card-body">
-			<a class="card-title text-truncate" href="#viewer/{ opts.data.id }" target="_blank" rel="noopener">{ opts.data.title } { opts.data.volume }</a>
-			<p class="card-text">
-				<small>
-					<a class="text-muted" each={ author in opts.data.authors } href="#viewer?authors__name={ author.name }">{ author.name }</a>
-					<span class="text-muted">-</span>
-					<a class="text-muted" href="#viewer?title={ opts.data.title }">{ opts.data.title }</a>
-					<span if={ opts.data.pub_date } class="text-muted ml-1">{ opts.data.pub_date }</span>
-					<a class="text-muted ml-1" href="/admin/viewer/book/{ opts.data.id }/change/" target="_blank" rel="noopener">管理</a>
-				</small>
-			</p>
+		<div class="card-body p-4">
+			<div class="row">
+				<div class="col-12 px-1">
+					<a class="card-link" href="#viewer/{ opts.data.id }" target="_blank" rel="noopener">{ opts.data.title } { opts.data.volume }</a>
+				</div>
+				<div class="col-auto px-1 d-flex">
+					<div class="pr-1" each={ author in opts.data.authors }><small><a class="text-muted" href="#viewer?authors__name={ author.name }">{ author.name }</a></small></div>
+				</div>
+				<div class="col-auto px-1">
+					<small><a class="text-muted" href="#viewer?title={ opts.data.title }">{ opts.data.title }</a></small>
+				</div>
+				<div class="col-auto px-1" if={ opts.data.pub_date }>
+					<small><span class="text-muted">{ opts.data.pub_date }</span></small>
+				</div>
+				<div class="col-auto px-1 ml-auto">
+					<small><a class="text-muted" href="/admin/viewer/book/{ opts.data.id }/change/" target="_blank" rel="noopener">管理</a></small>
+				</div>
+			</div>
 		</div>
 	</div>
 </book-result>
