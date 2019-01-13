@@ -141,7 +141,7 @@ import './loader.tag'
 </book-result>
 
 <page-list>
-	<div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; background-color: lightgray; height: { height }px;" onclick={ move_page } >
+	<div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; background-color: lightgray; height: { height }px;" onclick={ click }>
 		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="max-width: 100%; max-height: 100%;"/>
 	</div>
 
@@ -201,33 +201,52 @@ import './loader.tag'
 			this.update()
 		}
 
-		this.move_page = (e) => {
+		this.click = (e) => {
 			if (e.clientX < window.innerWidth/2) {
-				this.next()
+				this.go_to(this.page+this.shown_pages)
 			}
 			else {
-				this.prev()
+				this.go_to(this.page-this.shown_pages)
 			}
 		}
 
-		this.next = () => {
-			if (this.page+this.shown_pages < this.pages.length) {
-				this.page += this.shown_pages
+		this.keydown = (e) => {
+			switch (e.key) {
+				case 'ArrowRight':
+					this.go_to(this.page-this.shown_pages)
+					break
+				case 'ArrowLeft':
+					this.go_to(this.page+this.shown_pages)
+					break
+				case 'ArrowUp':
+					this.go_to(this.page-1)
+					break
+				case 'ArrowDown':
+					this.go_to(this.page+1)
+					break
+				case 'PageUp':
+					this.go_to(this.page-10)
+					break
+				case 'PageDown':
+					this.go_to(this.page+10)
+					break
+				case 'Home':
+					this.go_to(0)
+					break
+				case 'End':
+					this.go_to(this.pages.length-1)
+					break
 			}
-			else {
-				this.page = this.pages.length-1
-			}
-			this.update_location()
-			this.update_bookmark()
 		}
 
-		this.prev = () => {
-			if (this.page-this.shown_pages >= 0) {
-				this.page -= this.shown_pages
+		this.go_to = (page) => {
+			if (page < 0) {
+				page = 0
 			}
-			else {
-				this.page = 0
+			else if (page >= this.pages.length) {
+				page = this.pages.length-1
 			}
+			this.page = page
 			this.update_location()
 			this.update_bookmark()
 		}
@@ -248,9 +267,9 @@ import './loader.tag'
 			})
 		}
 
-		window.onresize = () => {
-			this.resize()
-		}
+		window.onresize = this.resize
+		document.onkeydown = this.keydown
+
 	</script>
 </page-list>
 
