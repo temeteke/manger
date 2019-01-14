@@ -20,19 +20,24 @@ def add_book(authors, title, volume=None):
         raise Exception(r.text)
 
 def get_info(name):
-    m = re.match(r'\[(.+)\]\s*(.+)\s*.*(?:第)(\d+).*', directory.name)
+    m = re.match(r'.*\[(.+)\]\s*(.+)\s*.*(?:(?:第)(\d+))?.*', directory.name)
     if m:
         authors = m.group(1).strip()
-        title = m.group(2).strip()
-        volume = int(m.group(3).strip())
-
         authors = input(f"authors (default:{authors}): ") or authors
         authors = authors.split(',')
         print(f"authors: {authors}")
+
+        title = m.group(2).strip()
         title = input(f"title (default:{title}): ") or title
         print(f"title: {title}")
-        volume = input(f"volume (default:{volume}): ") or volume
-        print(f"volume: {volume}")
+
+        if m.group(3):
+            volume = int(m.group(3).strip())
+            volume = input(f"volume (default:{volume}): ") or volume
+            print(f"volume: {volume}")
+        else:
+            volume = None
+
     else:
         authors = input(f"authors: ")
         if not authors:
