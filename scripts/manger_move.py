@@ -60,7 +60,7 @@ def move(src_dir, authors, title, volume=None):
     if volume:
         dst_dir /= Path(str(volume))
     print(f"{src_dir} -> {dst_dir}")
-    shutil.move(src_dir, dst_dir)
+    shutil.move(str(src_dir), str(dst_dir))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directories", metavar="DIRECTORY", nargs="+")
