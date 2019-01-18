@@ -24,7 +24,7 @@ def get_info(name):
     if m:
         authors = m.group(1).strip()
         authors = input(f"authors (default:{authors}): ") or authors
-        authors = authors.split(',')
+        authors = re.split(r'[,×]', authors)
         print(f"authors: {authors}")
 
         title = m.group(2).strip()
@@ -34,7 +34,7 @@ def get_info(name):
         authors = input(f"authors: ")
         if not authors:
             return
-        authors = authors.split(',')
+        authors = re.split(r'[,×]', authors)
         print(f"authors: {authors}")
 
         title = input(f"title: ")
@@ -42,7 +42,7 @@ def get_info(name):
             return
         print(f"title: {title}")
 
-    m = re.search(r'第(\d+)', directory.name)
+    m = re.search(r'[第v](\d+)', directory.name)
     if m:
         volume = int(m.group(1).strip())
         volume = input(f"volume (default:{volume}): ") or volume
