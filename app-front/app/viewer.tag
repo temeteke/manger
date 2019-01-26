@@ -142,7 +142,12 @@ import './loader.tag'
 
 <page-list>
 	<div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; background-color: lightgray; height: { height }px;" onclick={ click }>
+		<!-- Cache -->
+		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page-cache_pages && i < page } show={ false }/>
+		<!-- Shown Page -->
 		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page && i < page+shown_pages } onload={ resize } style="max-width: 100%; max-height: 100%;"/>
+		<!-- Cache -->
+		<img each={ page_url, i in pages } ref="img" src={ page_url } if={ i >= page+shown_pages && i < page+shown_pages+cache_pages } show={ false }/>
 	</div>
 
 	<script>
@@ -150,6 +155,7 @@ import './loader.tag'
 		this.page = location.hash.split('/')[2] ? Number(location.hash.split('/')[2]) : 0
 
 		this.shown_pages = 1
+		this.cache_pages = 4
 
 		this.on('route', () => {
 			if (process.env.DEBUG) console.log('route')
@@ -180,11 +186,13 @@ import './loader.tag'
 		}
 
 		this.resize = () => {
+			if (process.env.DEBUG) console.log('resize')
 			//画像サイズを画面いっぱいにする
 			this.height = window.innerHeight - this.root.getBoundingClientRect().top
 
 			//見開き表示の判定
 			let imgs = this.refs.img
+			imgs = imgs.filter( img => !img.hidden )
 			if (!Array.isArray(imgs)) {
 				imgs = [imgs]
 			}
