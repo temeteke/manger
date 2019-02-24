@@ -115,9 +115,7 @@ import './loader.tag'
 
 <book-result>
 	<div class="card mb-3">
-		<div class="card-img-top embed-responsive embed-responsive-4by3 bg-light">
-			<object data={ opts.data.pages[0] } style="object-fit: contain"/>
-		</div>
+		<thumbnail images={ opts.data.pages }/>
 		<div class="card-body p-4">
 			<div class="row">
 				<div class="col-12 px-1">
@@ -139,6 +137,31 @@ import './loader.tag'
 		</div>
 	</div>
 </book-result>
+
+<thumbnail>
+	<div class="card-img-top embed-responsive embed-responsive-4by3 bg-light" onmouseover={ mouseover } onmouseout={ mouseout }>
+		<object each={ image, i in opts.images } if={ i == index } data={ image } style="object-fit: contain"/>
+		<!-- Cache -->
+		<object each={ image, i in opts.images } if={ i == index+1 } data={ image } show={ false } style="object-fit: contain"/>
+	</div>
+
+	<script>
+		this.index = 0
+
+		this.mouseover = (e) => {
+			if (process.env.DEBUG) console.log('mouseover')
+			this.timer = setInterval(() => {
+				this.index = (this.index+1)%opts.images.length
+				this.update()
+			}, 1000)
+		}
+
+		this.mouseout = (e) => {
+			if (process.env.DEBUG) console.log('mouseout')
+			clearInterval(this.timer)
+		}
+	</script>
+</thumbnail>
 
 <page-list>
 	<div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; background-color: lightgray; height: { height }px;" onclick={ click }>
