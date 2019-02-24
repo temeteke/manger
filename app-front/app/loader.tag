@@ -1,7 +1,7 @@
 import 'loaders.css/loaders.min.css'
 
 <loader>
-	<div class="loader-inner ball-pulse text-center">
+	<div class="loader-inner ball-pulse text-center p-1">
 		<div/>
 		<div/>
 		<div/>
