@@ -1,28 +1,28 @@
 version: '2'
 
 services:
-  app-front:
-    build: app-front
+  front:
+    build: front
     env_file: .env
     volumes:
       - /work/assets
-      - ./app-front:/work
+      - ./front:/work
     command: npm start
 
-  app-back:
-    build: app-back
+  back:
+    build: back
     depends_on:
       - db
     env_file: .env
     volumes:
       - /work/static
       - ${MEDIA_ROOT}:/work/media
-      - ./app-back:/work
+      - ./back:/work
     networks:
       - front
       - back
     volumes_from:
-      - app-front
+      - front
     command: bash -c "python manage.py livereload --host 0.0.0.0 /work/assets/ & python manage.py runserver 0.0.0.0:80"
     ports:
       - "${PORT}:80"

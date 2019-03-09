@@ -9,17 +9,17 @@ services:
       - ./proxy/nginx_conf:/etc/nginx/conf.d
       - ${MEDIA_ROOT}:/work/media
     depends_on:
-      - app-back
+      - back
     networks:
       - front
     volumes_from:
-      - app-front
-      - app-back
+      - front
+      - back
     command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
 
-  app-front:
+  front:
     build:
-      context: app-front
+      context: front
       args:
         - DEBUG=${DEBUG}
         - TITLE=${TITLE}
@@ -27,20 +27,20 @@ services:
     volumes:
       - /work/assets
 
-  app-back:
-    build: app-back
+  back:
+    build: back
     depends_on:
       - db
     env_file: .env
     volumes:
       - /work/static
       - ${MEDIA_ROOT}:/work/media
-      - ./app-back:/work
+      - ./back:/work
     networks:
       - front
       - back
     volumes_from:
-      - app-front
+      - front
 
   db:
     image: postgres
