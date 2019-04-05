@@ -6,6 +6,7 @@ module.exports = {
 	entry: './app/index.js',
 	output: {
 		path: path.resolve(__dirname, 'assets/bundles/'),
+		publicPath: '/static/bundles/',
 		filename: '[name]-[hash].js'
 	},
 	module: {
