@@ -12,6 +12,7 @@
     "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
     "loaders.css": "^0.1.2",
+    "octicons": "^8.5.0",
     "popper.js": "^1.14.4",
     "riot": "^3.11.1",
     "riot-route": "^3.1.3"
