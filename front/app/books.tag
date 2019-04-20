@@ -29,6 +29,7 @@ import './octicons.tag'
 			'': 'Default',
 			'-pub_date': 'Newest',
 			'pub_date': 'Oldest',
+			'random': 'Random',
 		}
 		this.queries = querystring.parse(location.hash.split('?')[1])
 
