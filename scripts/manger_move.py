@@ -22,12 +22,12 @@ def add_book(authors, title, volume=None):
 def get_info(name):
     m = re.search(r'\[(.+)\]\s*(\S+)', directory.name)
     if m:
-        authors = m.group(1).strip()
+        authors = m.group(1).replace('_', ' ').strip()
         authors = input(f"authors (default:{authors}): ") or authors
         authors = re.split(r'[,×]', authors)
         print(f"authors: {authors}")
 
-        title = m.group(2).strip()
+        title = m.group(2).replace('_', ' ').strip()
         title = input(f"title (default:{title}): ") or title
         print(f"title: {title}")
     else:
@@ -57,7 +57,7 @@ def get_info(name):
     return authors, title, volume
 
 def move(src_dir, authors, title, volume=None):
-    dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors)) / Path(title)
+    dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
     if volume:
         dst_dir /= Path(str(volume))
     print(f"{src_dir} -> {dst_dir}")
