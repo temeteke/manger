@@ -20,7 +20,7 @@ def add_book(authors, title, volume=None):
         raise Exception(r.text)
 
 def get_info(name):
-    m = re.search(r'\[(.+)\]\s*(\S+)', directory.name)
+    m = re.search(r'\[(.+)\]\s*([^\[]+)', directory.name)
     if m:
         authors = m.group(1).replace('_', ' ').strip()
         authors = input(f"authors (default:{authors}): ") or authors
@@ -60,8 +60,11 @@ def move(src_dir, authors, title, volume=None):
     dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
     if volume:
         dst_dir /= Path(str(volume))
-    print(f"{src_dir} -> {dst_dir}")
-    shutil.move(str(src_dir), str(dst_dir))
+    if dst_dir.exists():
+        print(f"{dst_dir} already exists.")
+    else:
+        print(f"{src_dir} -> {dst_dir}")
+        shutil.move(str(src_dir), str(dst_dir))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directories", metavar="DIRECTORY", nargs="+")
