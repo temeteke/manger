@@ -20,7 +20,7 @@ def add_book(authors, title, volume=None):
         raise Exception(r.text)
 
 def get_info(name):
-    m = re.search(r'\[(.+)\]\s*([^\[]+)', directory.name)
+    m = re.search(r'\[(.+)\]\s*([^\[第v]+)', directory.name)
     if m:
         authors = m.group(1).replace('_', ' ').strip()
         authors = input(f"authors (default:{authors}): ") or authors
