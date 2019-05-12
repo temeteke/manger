@@ -56,16 +56,6 @@ def get_info(name):
 
     return authors, title, volume
 
-def move(src_dir, authors, title, volume=None):
-    dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
-    if volume:
-        dst_dir /= Path(str(volume))
-    if dst_dir.exists():
-        print(f"{dst_dir} already exists.")
-    else:
-        print(f"{src_dir} -> {dst_dir}")
-        shutil.move(str(src_dir), str(dst_dir))
-
 parser = argparse.ArgumentParser()
 parser.add_argument("directories", metavar="DIRECTORY", nargs="+")
 args = parser.parse_args()
@@ -82,5 +72,13 @@ for directory in args.directories:
         continue
 
     if authors and title:
-        move(directory, authors, title, volume)
-        add_book(authors, title, volume)
+        dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
+        if volume:
+            dst_dir /= Path(str(volume))
+
+        if dst_dir.exists():
+            print(f"{dst_dir} already exists.")
+        else:
+            print(f"{directory} -> {dst_dir}")
+            shutil.move(str(directory), str(dst_dir))
+            add_book(authors, title, volume)
