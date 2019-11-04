@@ -26,21 +26,25 @@ def get_info(name):
         authors = m.group(1).replace('_', ' ').strip()
         authors = input(f"authors (default:{authors}): ") or authors
         authors = re.split(r'[,×]', authors)
+        authors = [unicodedata.normalize('NFKC', x) for x in authors]
         print(f"authors: {authors}")
 
         title = m.group(2).replace('_', ' ').strip()
         title = input(f"title (default:{title}): ") or title
+        title = unicodedata.normalize('NFKC', title)
         print(f"title: {title}")
     else:
         authors = input(f"authors: ")
         if not authors:
             return
         authors = re.split(r'[,×]', authors)
+        authors = [unicodedata.normalize('NFKC', x) for x in authors]
         print(f"authors: {authors}")
 
         title = input(f"title: ")
         if not title:
             return
+        title = unicodedata.normalize('NFKC', title)
         print(f"title: {title}")
 
     m = re.search(r'[第v](\d+)', directory.name)
