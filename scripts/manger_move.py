@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import dotenv
 import os
+import unicodedata
 
 dotenv.load_dotenv(Path(__file__).parent / '../.env')
 
@@ -53,6 +54,9 @@ def get_info(name):
         except ValueError:
             volume = None
         print(f"volume: {volume}")
+
+    authors = [unicodedata.normalize('NFKC', x) for x in authors]
+    title = unicodedata.normalize('NFKC', title)
 
     return authors, title, volume
 
