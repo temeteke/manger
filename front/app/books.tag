@@ -27,6 +27,7 @@ import './octicons.tag'
 	<script>
 		this.orderings = {
 			'': 'Default',
+			'-id': 'Latest',
 			'-pub_date': 'Newest',
 			'pub_date': 'Oldest',
 			'random': 'Random',

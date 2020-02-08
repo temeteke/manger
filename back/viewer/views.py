@@ -40,5 +40,5 @@ class BookViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, RandomOrderingFilter)
     filter_fields = ('authors__name', 'title')
     search_fields = ('title', 'authors__name')
-    ordering_fields = ('authors__name', 'title', 'volume', 'pub_date')
+    ordering_fields = ('id', 'authors__name', 'title', 'volume', 'pub_date')
     ordering = 'id'
