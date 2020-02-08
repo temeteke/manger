@@ -29,7 +29,7 @@ services:
       - "${LIVERELOAD_PORT}:${LIVERELOAD_PORT}"
 
   db:
-    image: postgres
+    image: postgres:11
     volumes:
       - ./db/data:/var/lib/postgresql/data
     networks:
