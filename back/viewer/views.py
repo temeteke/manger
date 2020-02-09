@@ -41,4 +41,4 @@ class BookViewSet(ModelViewSet):
     filter_fields = ('authors__name', 'title')
     search_fields = ('title', 'authors__name')
     ordering_fields = ('id', 'authors__name', 'title', 'volume', 'pub_date')
-    ordering = 'id'
+    ordering = ('authors__name', 'title', 'volume')
