@@ -38,7 +38,7 @@ class BookViewSet(ModelViewSet):
     serializer_class = BookSerializer
     pagination_class = MyPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, RandomOrderingFilter)
-    filter_fields = ('authors__name', 'title')
+    filter_fields = ('type', 'authors__name', 'title')
     search_fields = ('title', 'authors__name')
-    ordering_fields = ('id', 'authors__name', 'title', 'volume', 'pub_date')
-    ordering = ('authors__name', 'title', 'volume')
+    ordering_fields = ('id', 'type', 'authors__name', 'title', 'volume', 'pub_date')
+    ordering = ('type', 'authors__name', 'title', 'volume')

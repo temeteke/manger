@@ -10,13 +10,13 @@ import unicodedata
 
 dotenv.load_dotenv(Path(__file__).parent / '../.env')
 
-def add_book(authors, title, volume=None):
-    data = {'authors': [{'name': author} for author in authors], 'title': title}
+def add_book(type, authors, title, volume=None):
+    data = {'type': type, 'authors': [{'name': author} for author in authors], 'title': title}
     if volume:
         data['volume'] = volume
     print(data)
 
-    r = requests.post("http://" + os.environ.get('HOST') + "/viewer/books/", json=data)
+    r = requests.post("http://" + os.environ.get('HOST') + ':' + os.environ.get('PORT') + "/viewer/books/", json=data)
     if r.status_code != requests.codes.created:
         raise Exception(r.text)
 
@@ -65,7 +65,8 @@ def get_info(name):
     return authors, title, volume
 
 parser = argparse.ArgumentParser()
-parser.add_argument("directories", metavar="DIRECTORY", nargs="+")
+parser.add_argument('-t', '--type', dest='type', default='manga')
+parser.add_argument('directories', metavar='DIRECTORY', nargs='+')
 args = parser.parse_args()
 
 for directory in args.directories:
@@ -80,7 +81,7 @@ for directory in args.directories:
         continue
 
     if authors and title:
-        dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
+        dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path(args.type) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
         if volume:
             dst_dir /= Path(str(volume))
 
@@ -89,4 +90,4 @@ for directory in args.directories:
         else:
             print(f"{directory} -> {dst_dir}")
             shutil.move(str(directory), str(dst_dir))
-            add_book(authors, title, volume)
+            add_book(args.type, authors, title, volume)
