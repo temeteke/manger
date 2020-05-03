@@ -8,7 +8,7 @@ verify_ssl = true
 [packages]
 Django = "==2.1"
 django-filter = "==2.0.0"
-djangorestframework = "==3.8.2"
+djangorestframework = "==3.9.1"
 psycopg2 = "*"
 requests = "*"
 
