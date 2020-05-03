@@ -93,9 +93,9 @@ class Book(models.Model):
             pass
         try:
             try:
-                self.date = datetime.date.fromisoformat(info['volumeInfo']['publishedDate']).isoformat()
+                self.pub_date = datetime.date.fromisoformat(info['volumeInfo']['publishedDate']).date()
             except ValueError:
-                self.date = datetime.datetime.strptime(info['volumeInfo']['publishedDate'], '%Y-%m').isoformat()
+                self.pub_date = datetime.datetime.strptime(info['volumeInfo']['publishedDate'], '%Y-%m').date()
         except KeyError:
             pass
         try:
