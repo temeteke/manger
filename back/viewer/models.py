@@ -11,6 +11,7 @@ class Author(models.Model):
         return self.name
 
 class Book(models.Model):
+    type = models.CharField(max_length=20)
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField(Author, related_name='books')
     volume = models.IntegerField(blank=True, null=True)
@@ -25,7 +26,7 @@ class Book(models.Model):
 
     @property
     def directory(self):
-        directory = Path('_'.join([ author.name for author in self.authors.all()])) / Path(self.title)
+        directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
         if self.volume:
             directory /= Path(str(self.volume))
         directory = Path(str(directory).replace(' ', '_'))
