@@ -1,13 +1,12 @@
 const webpack = require('webpack');
 const path = require('path')
-const BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = {
-	entry: './app/index.js',
+	entry: './src/index.js',
 	output: {
-		path: path.resolve(__dirname, 'assets/bundles/'),
-		publicPath: '/static/bundles/',
-		filename: '[name]-[hash].js'
+		path: path.resolve(__dirname, 'dist/bundles/'),
+		publicPath: '/bundles/',
+		filename: '[name].js'
 	},
 	module: {
 		rules: [
@@ -46,8 +45,6 @@ module.exports = {
 	plugins: [
 		new webpack.EnvironmentPlugin([
 			'DEBUG',
-			'TITLE',
 		]),
-		new BundleTracker({path: __dirname, filename: './assets/webpack-stats.json'}),
 	],
 };

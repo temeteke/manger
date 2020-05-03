@@ -12,7 +12,7 @@ import './octicons.tag'
 
 <navbar>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="#">{ title }</a>
+		<a class="navbar-brand" href="#">manger</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -30,8 +30,4 @@ import './octicons.tag'
 			</ul>
 		</div>
 	</nav>
-
-	<script>
-		this.title = process.env.TITLE
-	</script>
 </navbar>

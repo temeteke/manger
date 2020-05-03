@@ -206,5 +206,5 @@ venv.bak/
 # End of https://www.gitignore.io/api/node,python,django
 
 
-assets/bundles/
-webpack-stats.json
+back/static
+front/dist/bundles

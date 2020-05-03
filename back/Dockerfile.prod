@@ -1,0 +1,13 @@
+FROM python:3.8
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /work
+
+RUN pip install pipenv uwsgi
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --deploy --system
+
+COPY . ./
+RUN python manage.py migrate; python manage.py collectstatic --noinput
+CMD uwsgi --socket :3031 --wsgi-file app/wsgi.py
+EXPOSE 3031

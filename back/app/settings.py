@@ -35,11 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'livereload',
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'webpack_loader',
     'app',
     'viewer',
 ]
@@ -52,7 +50,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -134,16 +131,3 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'assets/webpack-stats.json'),
-    }
-}
-
-LIVERELOAD_HOST = os.environ.get('HOST', '127.0.0.1')
-LIVERELOAD_PORT = os.environ.get('LIVERELOAD_PORT', '35729')
-
-TITLE = os.environ.get('TITLE', 'manger')

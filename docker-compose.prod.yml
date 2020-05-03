@@ -6,38 +6,36 @@ services:
     ports:
       - "${PORT}:80"
     volumes:
-      - ./proxy/nginx_conf:/etc/nginx/conf.d
+      - ./front:/work/front
+      - ./back:/work/back
+      - ./proxy/nginx_conf_${ENV}:/etc/nginx/conf.d
       - ${MEDIA_ROOT}:/work/media
     depends_on:
       - back
     networks:
       - front
-    volumes_from:
-      - front
-      - back
     command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
 
   front:
     build: front
     env_file: .env
     volumes:
-      - /work/assets
-    tty: true
+      - ./front:/work
+      - node_modules:/work/node_modules
 
   back:
-    build: back
+    build:
+      context: back
+      dockerfile: Dockerfile.${ENV}
     depends_on:
       - db
     env_file: .env
     volumes:
-      - /work/static
-      - ${MEDIA_ROOT}:/work/media
       - ./back:/work
+      - ${MEDIA_ROOT}:/work/media
     networks:
       - front
       - back
-    volumes_from:
-      - front
 
   db:
     image: postgres:11
@@ -45,6 +43,9 @@ services:
       - ./db/data:/var/lib/postgresql/data
     networks:
       - back
+
+volumes:
+  node_modules:
 
 networks:
   front:

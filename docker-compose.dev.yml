@@ -1,32 +1,42 @@
 version: '2'
 
 services:
+  proxy:
+    image: nginx
+    ports:
+      - "${PORT}:80"
+    volumes:
+      - ./front:/work/front
+      - ./back:/work/back
+      - ./proxy/nginx_conf_${ENV}:/etc/nginx/conf.d
+      - ${MEDIA_ROOT}:/work/media
+    depends_on:
+      - back
+    networks:
+      - front
+    command: bash -c "groupadd -g ${MEDIA_GROUP_GID} ${MEDIA_GROUP_NAME}; usermod -G ${MEDIA_GROUP_NAME} -a nginx; nginx -g 'daemon off;'"
+
   front:
     build: front
     env_file: .env
     volumes:
-      - /work/assets
       - ./front:/work
+      - node_modules:/work/node_modules
     command: npm start
 
   back:
-    build: back
+    build:
+      context: back
+      dockerfile: Dockerfile.${ENV}
     depends_on:
       - db
     env_file: .env
     volumes:
-      - /work/static
-      - ${MEDIA_ROOT}:/work/media
       - ./back:/work
+      - ${MEDIA_ROOT}:/work/media
     networks:
       - front
       - back
-    volumes_from:
-      - front
-    command: bash -c "python manage.py livereload --host 0.0.0.0 /work/assets/ & python manage.py runserver 0.0.0.0:80"
-    ports:
-      - "${PORT}:80"
-      - "${LIVERELOAD_PORT}:${LIVERELOAD_PORT}"
 
   db:
     image: postgres:11
@@ -34,6 +44,18 @@ services:
       - ./db/data:/var/lib/postgresql/data
     networks:
       - back
+
+  browsersync:
+    build: browsersync
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    volumes:
+      - ./front/dist:/work
+    command: start --proxy ${HOST}:${PORT} --files /work/**
+
+volumes:
+  node_modules:
 
 networks:
   front:
