@@ -76,17 +76,22 @@ class Book(models.Model):
             self.title = info['volumeInfo']['title']
         except KeyError:
             pass
+
+        self.authors.clear()
         for x in info['volumeInfo']['authors']:
             author, created = Author.objects.get_or_create(name=x)
             self.authors.add(author)
+
         try:
             self.isbn = info['volumeInfo']['industryIdentifiers'][-1]['identifier']
         except KeyError:
             pass
+
         try:
             self.publisher = info['volumeInfo']['publisher']
         except KeyError:
             pass
+
         try:
             try:
                 self.pub_date = datetime.date.fromisoformat(info['volumeInfo']['publishedDate']).date()
@@ -94,6 +99,7 @@ class Book(models.Model):
                 self.pub_date = datetime.datetime.strptime(info['volumeInfo']['publishedDate'], '%Y-%m').date()
         except KeyError:
             pass
+
         try:
             self.description = info['volumeInfo']['description']
         except KeyError:
