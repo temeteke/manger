@@ -116,8 +116,11 @@ import './octicons.tag'
 						<div if={ pub_date } class="mr-1">
 							<small><span class="text-muted"><octicons symbol="calendar"/>{ pub_date }</span></small>
 						</div>
+						<div class="mr-1">
+							<small><button class="btn btn-link btn-sm p-0 border-0 text-muted align-baseline" onclick={ update_book }><octicons symbol="sync"/></button></small>
+						</div>
 						<div>
-							<small><a class="text-muted" href="/admin/viewer/book/{ id }/change/" target="_blank" rel="noopener"><octicons symbol="gear"/>Admin</a></small>
+							<small><a class="text-muted" href="/admin/viewer/book/{ id }/change/" target="_blank" rel="noopener"><octicons symbol="gear"/></a></small>
 						</div>
 					</div>
 				</div>
@@ -177,6 +180,10 @@ import './octicons.tag'
 					this.update()
 				})
 			}
+		}
+
+		this.update_book = (e) => {
+			fetch('/viewer/update-book/' + e.item.id)
 		}
 	</script>
 </book-results>

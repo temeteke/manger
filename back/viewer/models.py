@@ -70,7 +70,7 @@ class Book(models.Model):
             info = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': ' '.join(queries)}).json()
 
             for x in info['items']:
-                if x['volumeInfo']['title'] == self.title:
+                if self.title in x['volumeInfo']['title'] and self.volume in x['volumeInfo']['title']:
                     info = requests.get(x['selfLink']).json()
                     break
             else:
