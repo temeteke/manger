@@ -58,7 +58,7 @@ class Book(models.Model):
                 queries.append(author.name)
             queries.append(self.title)
             if self.volume:
-                queries.append(self.volume)
+                queries.append(str(self.volume))
 
             info = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': ' '.join(queries)}).json()
 
@@ -100,5 +100,27 @@ class Book(models.Model):
             pass
 
         self.save()
+
+        self.update_directory()
+
+        return self
+
+    def update_directory(self):
+        old_directory = self.directory
+        new_directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
+        if self.volume:
+            new_directory /= Path(str(self.volume))
+        new_directory = Path(str(new_directory).replace(' ', '_'))
+
+        old_path = Path(settings.MEDIA_ROOT) / old_directory
+        new_path = Path(settings.MEDIA_ROOT) / new_directory
+
+        if old_path.exists() and not new_path.exists():
+            new_path.mkdir(parents=True)
+            old_path.rename(new_path)
+
+        if new_path.exists():
+            self.directory = new_directory
+            self.save()
 
         return self
