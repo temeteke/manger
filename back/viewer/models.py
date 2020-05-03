@@ -13,9 +13,10 @@ class Author(models.Model):
         return self.name
 
 class Book(models.Model):
+    directory = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=20)
-    title = models.CharField(max_length=100)
     authors = models.ManyToManyField(Author, related_name='books')
+    title = models.CharField(max_length=100)
     volume = models.IntegerField(blank=True, null=True)
     isbn = models.CharField('ISBN', max_length=13, blank=True)
     publisher = models.CharField(max_length=20, blank=True)
@@ -28,14 +29,6 @@ class Book(models.Model):
         if self.volume:
            name += ' ' + str(self.volume)
         return name
-
-    @property
-    def directory(self):
-        directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
-        if self.volume:
-            directory /= Path(str(self.volume))
-        directory = Path(str(directory).replace(' ', '_'))
-        return directory
 
     @property
     def pages(self):
