@@ -15,7 +15,10 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField(Author, related_name='books')
     volume = models.IntegerField(blank=True, null=True)
+    isbn = models.CharField('ISBN', max_length=13, blank=True)
+    publisher = models.CharField(max_length=20, blank=True)
     pub_date = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True)
     bookmark = models.IntegerField(default=0)
 
     def __str__(self):

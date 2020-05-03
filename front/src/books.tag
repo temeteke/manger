@@ -105,18 +105,19 @@ import './octicons.tag'
 				<thumbnail images={ pages }/>
 				<div class="card-body">
 					<a class="card-link" href="#pages/{ id }" target="_blank" rel="noopener">{ title } { volume }</a>
-					<div class="d-flex justify-content-between flex-wrap">
-						<div class="d-flex">
-							<div class="pr-2" each={ author in authors }><small><a class="text-muted" href="#books?authors__name={ author.name }">{ author.name }</a></small></div>
+					<div class="d-flex flex-wrap">
+						<div class="mr-1">
+							<small><a class="text-muted" href="#books?type={ type }">{ type }</a></small>
 						</div>
-						<div class="pr-2">
-							<small><a class="text-muted" href="#books?title={ title }">{ title }</a></small>
+						<div class="mr-1" each={ author in authors }><small><a class="text-muted" href="#books?authors__name={ author.name }"><octicons symbol="person"/>{ author.name }</a></small></div>
+						<div class="mr-1">
+							<small><a class="text-muted" href="#books?title={ title }"><octicons symbol="book"/>{ title }</a></small>
 						</div>
-						<div if={ pub_date }>
-							<small><span class="text-muted">{ pub_date }</span></small>
+						<div if={ pub_date } class="mr-1">
+							<small><span class="text-muted"><octicons symbol="calendar"/>{ pub_date }</span></small>
 						</div>
-						<div class="ml-auto">
-							<small><a class="text-muted" href="/admin/viewer/book/{ id }/change/" target="_blank" rel="noopener">Admin</a></small>
+						<div>
+							<small><a class="text-muted" href="/admin/viewer/book/{ id }/change/" target="_blank" rel="noopener"><octicons symbol="gear"/>Admin</a></small>
 						</div>
 					</div>
 				</div>
