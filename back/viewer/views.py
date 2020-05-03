@@ -3,6 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.settings import api_settings
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Author, Book
@@ -42,3 +44,10 @@ class BookViewSet(ModelViewSet):
     search_fields = ('title', 'authors__name')
     ordering_fields = ('id', 'type', 'authors__name', 'title', 'volume', 'pub_date')
     ordering = ('type', 'authors__name', 'title', 'volume')
+
+
+@api_view()
+def update_book(request, book_id):
+    book = Book.objects.get(id=book_id)
+    book.update()
+    return Response(BookSerializer(book, context={'request': request}).data)

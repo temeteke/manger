@@ -3,6 +3,8 @@ from pathlib import Path
 from django.conf import settings
 import urllib
 import re
+import requests
+import datetime
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -49,3 +51,58 @@ class Book(models.Model):
 
         paths = sorted([ path for path in directory.iterdir() if path.is_file() ], key=numerical_sort)
         return [ urllib.parse.quote(str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT))) for p in paths]
+
+    def update(self):
+        if self.isbn:
+            info = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': 'isbn:' + self.isbn}).json()
+            try:
+                info = requests.get(info['items'][0]['selfLink']).json()
+            except KeyError:
+                return self
+        else:
+            queries = []
+            for author in self.authors.all():
+                queries.append(author.name)
+            queries.append(self.title)
+            if self.volume:
+                queries.append(self.volume)
+
+            info = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': ' '.join(queries)}).json()
+
+            for x in info['items']:
+                if x['volumeInfo']['title'] == self.title:
+                    info = requests.get(x['selfLink']).json()
+                    break
+            else:
+                return self
+
+        try:
+            self.title = info['volumeInfo']['title']
+        except KeyError:
+            pass
+        for x in info['volumeInfo']['authors']:
+            author, created = Author.objects.get_or_create(name=x)
+            self.authors.add(author)
+        try:
+            self.isbn = info['volumeInfo']['industryIdentifiers'][-1]['identifier']
+        except KeyError:
+            pass
+        try:
+            self.publisher = info['volumeInfo']['publisher']
+        except KeyError:
+            pass
+        try:
+            try:
+                self.date = datetime.date.fromisoformat(info['volumeInfo']['publishedDate']).isoformat()
+            except ValueError:
+                self.date = datetime.datetime.strptime(info['volumeInfo']['publishedDate'], '%Y-%m').isoformat()
+        except KeyError:
+            pass
+        try:
+            self.description = info['volumeInfo']['description']
+        except KeyError:
+            pass
+
+        self.save()
+
+        return self

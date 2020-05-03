@@ -10,6 +10,7 @@ Django = "==2.1"
 django-filter = "==2.0.0"
 djangorestframework = "==3.8.2"
 psycopg2 = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"
