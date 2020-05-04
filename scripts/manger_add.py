@@ -43,7 +43,7 @@ for book_type in TYPES:
                     else:
                         try:
                             x = re.findall(r'^(\d+)_(.+)$', volume_path.name)[0]
-                            add_book(book_type, author_path.name.split('_'), title_path.name.replace('_', ' '), x[0], x[1])
+                            add_book(book_type, author_path.name.split('_'), title_path.name.replace('_', ' '), x[0], x[1].replace('_', ' '))
                         except IndexError:
                             pass
             else:
