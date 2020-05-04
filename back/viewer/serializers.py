@@ -12,7 +12,6 @@ class BookSerializer(serializers.ModelSerializer):
         fields = ('id', 'type', 'title', 'authors', 'volume', 'isbn', 'publisher', 'pub_date', 'description', 'directory', 'pages', 'bookmark')
 
     authors = AuthorSerializer(many=True)
-    directory = serializers.CharField(read_only=True)
     pages = serializers.ListField(read_only=True)
 
     def create(self, validated_data):

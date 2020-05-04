@@ -8,6 +8,5 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --system --dev
 
 COPY . ./
-RUN python manage.py migrate; python manage.py collectstatic --noinput
 CMD python manage.py runserver 0.0.0.0:80
 EXPOSE 80
