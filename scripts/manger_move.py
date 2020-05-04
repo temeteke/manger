@@ -10,8 +10,13 @@ import unicodedata
 
 dotenv.load_dotenv(Path(__file__).parent / '../.env')
 
-def add_book(type, authors, title, volume=None):
-    data = {'type': type, 'authors': [{'name': author} for author in authors], 'title': title}
+def add_book(book_type, authors, title, volume=None):
+    directory = Path(book_type) / Path('_'.join(authors)) / Path(title)
+    if volume:
+        directory /= Path(str(volume))
+    directory = str(directory).replace(' ', '_')
+
+    data = {'directory': directory, 'type': book_type, 'authors': [{'name': author} for author in authors], 'title': title}
     if volume:
         data['volume'] = volume
     print(data)
