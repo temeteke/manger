@@ -29,6 +29,8 @@ class Book(models.Model):
         name = self.title
         if self.volume:
            name += ' ' + str(self.volume)
+        if self.volume_title:
+           name += ' ' + str(self.volume_title)
         return name
 
     @property
