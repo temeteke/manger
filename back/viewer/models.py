@@ -48,28 +48,6 @@ class Book(models.Model):
         paths = sorted([ path for path in directory.iterdir() if path.is_file() ], key=numerical_sort)
         return [ urllib.parse.quote(str(Path(settings.MEDIA_URL) / p.relative_to(settings.MEDIA_ROOT))) for p in paths]
 
-    def save(self, *args, **kwargs):
-        old_directory = self.directory
-        new_directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
-        if self.volume:
-            volume_str = str(self.volume)
-            if self.volume_title:
-                volume_str += '_' + self.volume_title
-            new_directory /= Path(volume_str)
-        new_directory = Path(str(new_directory).replace(' ', '_'))
-
-        old_path = Path(settings.MEDIA_ROOT) / old_directory
-        new_path = Path(settings.MEDIA_ROOT) / new_directory
-
-        if old_path.exists() and not new_path.exists():
-            new_path.mkdir(parents=True)
-            old_path.rename(new_path)
-
-        if new_path.exists():
-            self.directory = new_directory
-
-        super().save(*args, **kwargs)
-
     def update(self):
         if self.isbn:
             info = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': 'isbn:' + self.isbn}).json()
@@ -131,5 +109,30 @@ class Book(models.Model):
             pass
 
         self.save()
+
+        self.update_directory()
+
+        return self
+
+    def update_directory(self):
+        old_directory = self.directory
+        new_directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
+        if self.volume:
+            volume_str = str(self.volume)
+            if self.volume_title:
+                volume_str += '_' + self.volume_title
+            directory /= Path(volume_str)
+        new_directory = Path(str(new_directory).replace(' ', '_'))
+
+        old_path = Path(settings.MEDIA_ROOT) / old_directory
+        new_path = Path(settings.MEDIA_ROOT) / new_directory
+
+        if old_path.exists() and not new_path.exists():
+            new_path.mkdir(parents=True)
+            old_path.rename(new_path)
+
+        if new_path.exists():
+            self.directory = new_directory
+            self.save()
 
         return self
