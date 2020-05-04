@@ -104,7 +104,7 @@ import './octicons.tag'
 			<div class="card mb-3">
 				<thumbnail images={ pages }/>
 				<div class="card-body">
-					<a class="card-link" href="#pages/{ id }" target="_blank" rel="noopener">{ title } { volume }</a>
+					<a class="card-link" href="#pages/{ id }" target="_blank" rel="noopener">{ title } { volume }<virtual if={ volume_title }> { volume_title }</virtual></a>
 					<div class="d-flex flex-wrap">
 						<div class="mr-1">
 							<small><a class="text-muted" href="#books?type={ type }">{ type }</a></small>

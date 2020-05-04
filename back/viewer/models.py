@@ -18,6 +18,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author, related_name='books')
     title = models.CharField(max_length=100)
     volume = models.IntegerField(blank=True, null=True)
+    volume_title = models.CharField(max_length=100, blank=True)
     isbn = models.CharField('ISBN', max_length=13, blank=True)
     publisher = models.CharField(max_length=20, blank=True)
     pub_date = models.DateField(blank=True, null=True)
@@ -115,7 +116,10 @@ class Book(models.Model):
         old_directory = self.directory
         new_directory = Path(self.type) / Path('_'.join([author.name for author in self.authors.all()])) / Path(self.title)
         if self.volume:
-            new_directory /= Path(str(self.volume))
+            volume_str = str(self.volume)
+            if self.volume_title:
+                volume_str += '_' + self.volume_title
+            directory /= Path(volume_str)
         new_directory = Path(str(new_directory).replace(' ', '_'))
 
         old_path = Path(settings.MEDIA_ROOT) / old_directory

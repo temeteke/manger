@@ -10,15 +10,20 @@ import unicodedata
 
 dotenv.load_dotenv(Path(__file__).parent / '../.env')
 
-def add_book(book_type, authors, title, volume=None):
+def add_book(book_type, authors, title, volume=None, volume_title=''):
     directory = Path(book_type) / Path('_'.join(authors)) / Path(title)
     if volume:
-        directory /= Path(str(volume))
+        volume_str = str(volume)
+        if volume_title:
+            volume_str += '_' + volume_title
+        directory /= Path(volume_str)
     directory = str(directory).replace(' ', '_')
 
     data = {'directory': directory, 'type': book_type, 'authors': [{'name': author} for author in authors], 'title': title}
     if volume:
         data['volume'] = volume
+    if volume_title:
+        data['volume_title'] = volume_title
     print(data)
 
     r = requests.post("http://" + os.environ.get('HOST') + ':' + os.environ.get('PORT') + "/viewer/books/", json=data)
@@ -64,10 +69,14 @@ def get_info(name):
             volume = None
         print(f"volume: {volume}")
 
+    volume_title = input(f"volume title: ")
+    print(f"volume_title: {volume_title}")
+
     authors = [unicodedata.normalize('NFKC', x) for x in authors]
     title = unicodedata.normalize('NFKC', title)
+    volume_title = unicodedata.normalize('NFKC', volume_title)
 
-    return authors, title, volume
+    return authors, title, volume, volume_title
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--type', dest='type', default='manga')
@@ -81,7 +90,7 @@ for directory in args.directories:
     print(directory.name)
 
     try:
-        authors, title, volume = get_info(directory.name)
+        authors, title, volume, volume_title = get_info(directory.name)
     except TypeError:
         continue
 
@@ -95,4 +104,4 @@ for directory in args.directories:
         else:
             print(f"{directory} -> {dst_dir}")
             shutil.move(str(directory), str(dst_dir))
-            add_book(args.type, authors, title, volume)
+            add_book(args.type, authors, title, volume, volume_title)

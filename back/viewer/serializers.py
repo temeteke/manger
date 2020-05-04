@@ -9,7 +9,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ('id', 'type', 'title', 'authors', 'volume', 'isbn', 'publisher', 'pub_date', 'description', 'directory', 'pages', 'bookmark')
+        fields = ('id', 'type', 'title', 'authors', 'volume', 'volume_title', 'isbn', 'publisher', 'pub_date', 'description', 'directory', 'pages', 'bookmark')
 
     authors = AuthorSerializer(many=True)
     pages = serializers.ListField(read_only=True)
