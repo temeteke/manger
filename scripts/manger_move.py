@@ -49,7 +49,7 @@ for directory in args.directories:
 
     authors = ''
     title = ''
-    volume = None
+    volume = ''
     volume_title = ''
 
     if args.authors:
@@ -84,13 +84,15 @@ for directory in args.directories:
 
     m = re.search(r'[第v](\d+)', directory.name)
     if m:
-        volume = int(m.group(1).strip())
+        volume = m.group(1).strip()
     if not args.auto:
-        try:
-            volume = int(input(f"volume(default:{volume}): ")) or volume
-        except ValueError:
-            print("Not Integer")
-            continue
+        volume = input(f"volume(default:{volume}): ") or volume
+        if volume:
+            try:
+                volume = int(volume)
+            except ValueError:
+                print("Not Integer")
+                continue
     print(f"volume: {volume}")
 
     if volume and not args.auto:
