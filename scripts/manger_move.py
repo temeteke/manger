@@ -34,6 +34,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--type', dest='type', default='manga')
 parser.add_argument('--authors', dest='authors')
 parser.add_argument('--title', dest='title')
+parser.add_argument('-a', '--auto', dest='auto', action='store_true')
 parser.add_argument('directories', metavar='DIRECTORY', nargs='+')
 args = parser.parse_args()
 
@@ -48,6 +49,8 @@ for directory in args.directories:
 
     authors = ''
     title = ''
+    volume = None
+    volume_title = ''
 
     if args.authors:
         authors = args.authors
@@ -62,7 +65,8 @@ for directory in args.directories:
         if not title:
             title = m.group(2).replace('_', ' ').strip()
 
-    authors = input(f"authors(default:{authors}): ") or authors
+    if not args.auto:
+        authors = input(f"authors(default:{authors}): ") or authors
     authors = re.split(r'[,×]', authors)
     authors = [x.strip() for x in authors]
     authors = [unicodedata.normalize('NFKC', x) for x in authors if x]
@@ -70,7 +74,8 @@ for directory in args.directories:
         continue
     print(f"authors: {authors}")
 
-    title = input(f"title(default:{title}): ") or title
+    if not args.auto:
+        title = input(f"title(default:{title}): ") or title
     title = title.strip()
     title = unicodedata.normalize('NFKC', title)
     if not title:
@@ -80,16 +85,15 @@ for directory in args.directories:
     m = re.search(r'[第v](\d+)', directory.name)
     if m:
         volume = int(m.group(1).strip())
-        volume = input(f"volume(default:{volume}): ") or volume
-        print(f"volume: {volume}")
-    else:
+    if not args.auto:
         try:
-            volume = int(input(f"volume: "))
+            volume = int(input(f"volume(default:{volume}): ")) or volume
         except ValueError:
-            volume = None
-        print(f"volume: {volume}")
+            print("Not Integer")
+            continue
+    print(f"volume: {volume}")
 
-    if volume:
+    if volume and not args.auto:
         volume_title = input(f"volume_title: ")
         volume_title = unicodedata.normalize('NFKC', volume_title)
         print(f"volume_title: {volume_title}")
