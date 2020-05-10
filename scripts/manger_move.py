@@ -30,37 +30,57 @@ def add_book(book_type, authors, title, volume=None, volume_title=''):
     if r.status_code != requests.codes.created:
         raise Exception(r.text)
 
-def get_info(name):
+parser = argparse.ArgumentParser()
+parser.add_argument('--type', dest='type', default='manga')
+parser.add_argument('--authors', dest='authors')
+parser.add_argument('--title', dest='title')
+parser.add_argument('directories', metavar='DIRECTORY', nargs='+')
+args = parser.parse_args()
+
+print(f"type: {args.type}")
+
+for directory in args.directories:
+    directory = Path(directory)
+    print(f"directory: {directory.name}")
+    if not directory.is_dir():
+        print("Not found")
+        continue
+
+    authors = ''
+    title = ''
+
+    if args.authors:
+        authors = args.authors
+    if args.title:
+        title = args.title
+
     m = re.search(r'\[(.+)\]\s*([^\[第v]+)', directory.name)
     if m:
-        authors = m.group(1).replace('_', ' ').strip()
-        authors = input(f"authors (default:{authors}): ") or authors
-        authors = re.split(r'[,×]', authors)
-        authors = [unicodedata.normalize('NFKC', x) for x in authors]
-        print(f"authors: {authors}")
-
-        title = m.group(2).replace('_', ' ').strip()
-        title = input(f"title (default:{title}): ") or title
-        title = unicodedata.normalize('NFKC', title)
-        print(f"title: {title}")
-    else:
-        authors = input(f"authors: ")
         if not authors:
-            return
-        authors = re.split(r'[,×]', authors)
-        authors = [unicodedata.normalize('NFKC', x) for x in authors]
-        print(f"authors: {authors}")
+            authors = m.group(1).replace('_', ' ').strip()
 
-        title = input(f"title: ")
         if not title:
-            return
-        title = unicodedata.normalize('NFKC', title)
-        print(f"title: {title}")
+            title = m.group(2).replace('_', ' ').strip()
+
+    authors = input(f"authors(default:{authors}): ") or authors
+    authors = re.split(r'[,×]', authors)
+    authors = [x.strip() for x in authors]
+    authors = [unicodedata.normalize('NFKC', x) for x in authors if x]
+    if not authors:
+        continue
+    print(f"authors: {authors}")
+
+    title = input(f"title(default:{title}): ") or title
+    title = title.strip()
+    title = unicodedata.normalize('NFKC', title)
+    if not title:
+        continue
+    print(f"title: {title}")
 
     m = re.search(r'[第v](\d+)', directory.name)
     if m:
         volume = int(m.group(1).strip())
-        volume = input(f"volume (default:{volume}): ") or volume
+        volume = input(f"volume(default:{volume}): ") or volume
         print(f"volume: {volume}")
     else:
         try:
@@ -69,39 +89,21 @@ def get_info(name):
             volume = None
         print(f"volume: {volume}")
 
-    volume_title = input(f"volume title: ")
-    print(f"volume_title: {volume_title}")
+    if volume:
+        volume_title = input(f"volume_title: ")
+        volume_title = unicodedata.normalize('NFKC', volume_title)
+        print(f"volume_title: {volume_title}")
 
-    authors = [unicodedata.normalize('NFKC', x) for x in authors]
-    title = unicodedata.normalize('NFKC', title)
-    volume_title = unicodedata.normalize('NFKC', volume_title)
+    dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path(args.type) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
+    if volume:
+        volume_str = str(volume)
+        if volume_title:
+            volume_str += '_' + volume_title
+        dst_dir /= Path(volume_str)
 
-    return authors, title, volume, volume_title
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-t', '--type', dest='type', default='manga')
-parser.add_argument('directories', metavar='DIRECTORY', nargs='+')
-args = parser.parse_args()
-
-for directory in args.directories:
-    directory = Path(directory)
-    if not directory.is_dir():
-        continue
-    print(directory.name)
-
-    try:
-        authors, title, volume, volume_title = get_info(directory.name)
-    except TypeError:
-        continue
-
-    if authors and title:
-        dst_dir = Path(os.environ.get('MEDIA_ROOT')) / Path(args.type) / Path('_'.join(authors).replace(' ', '_')) / Path(title.replace(' ', '_'))
-        if volume:
-            dst_dir /= Path(str(volume))
-
-        if dst_dir.exists():
-            print(f"{dst_dir} already exists.")
-        else:
-            print(f"{directory} -> {dst_dir}")
-            shutil.move(str(directory), str(dst_dir))
-            add_book(args.type, authors, title, volume, volume_title)
+    if dst_dir.exists():
+        print(f"{dst_dir} already exists.")
+    else:
+        print(f"Moving directory: {directory} -> {dst_dir}")
+        shutil.move(str(directory), str(dst_dir))
+        add_book(args.type, authors, title, volume, volume_title)
