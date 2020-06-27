@@ -87,12 +87,12 @@ for directory in args.directories:
         volume = m.group(1).strip()
     if not args.auto:
         volume = input(f"volume(default:{volume}): ") or volume
-        if volume:
-            try:
-                volume = int(volume)
-            except ValueError:
-                print("Not Integer")
-                continue
+    if volume:
+        try:
+            volume = int(volume)
+        except ValueError:
+            print("Not Integer")
+            continue
     print(f"volume: {volume}")
 
     if volume and not args.auto:
