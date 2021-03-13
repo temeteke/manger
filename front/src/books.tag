@@ -189,7 +189,7 @@ import './octicons.tag'
 </book-results>
 
 <thumbnail>
-	<div class="card-img-top embed-responsive embed-responsive-4by3 bg-light" onmouseover={ mouseover } onmouseout={ mouseout }>
+	<div class="card-img-top embed-responsive embed-responsive-4by3 bg-light" onmouseenter={ mouseenter } onmouseleave={ mouseleave }>
 		<object each={ image, i in opts.images } if={ i == index } data={ image } style="object-fit: contain"/>
 		<!-- Cache -->
 		<object each={ image, i in opts.images } if={ i == index+1 } data={ image } show={ false } style="object-fit: contain"/>
@@ -198,16 +198,18 @@ import './octicons.tag'
 	<script>
 		this.index = 0
 
-		this.mouseover = (e) => {
-			if (process.env.DEBUG) console.log('mouseover')
+		this.mouseenter = (e) => {
+			if (process.env.DEBUG) console.log('mouseenter')
+			this.index = (this.index+1)%opts.images.length
 			this.timer = setInterval(() => {
 				this.index = (this.index+1)%opts.images.length
 				this.update()
 			}, 1000)
 		}
 
-		this.mouseout = (e) => {
-			if (process.env.DEBUG) console.log('mouseout')
+		this.mouseleave = (e) => {
+			if (process.env.DEBUG) console.log('mouseleave')
+			this.index = 0
 			clearInterval(this.timer)
 		}
 	</script>
